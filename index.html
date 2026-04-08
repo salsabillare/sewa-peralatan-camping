@@ -8,174 +8,405 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
+
+:root{
+--forest:#2D4A1E;
+--leaf:#5E8C32;
+--lime:#8DC63F;
+--cream:#F8F4EC;
+--mist:#EEF2E8;
+--stone:#1C1C1C;
+}
+
 body{
 font-family:'DM Sans',sans-serif;
-background:#F8F4EC;
+background:var(--cream);
+color:var(--stone);
+margin:0;
 }
+
+/* HEADER */
+
 header{
-background:#2D4A1E;
-padding:15px 30px;
+background:var(--forest);
+position:sticky;
+top:0;
+z-index:50;
+}
+
+.header-inner{
+max-width:1200px;
+margin:auto;
 display:flex;
 align-items:center;
-justify-content:space-between;
+gap:20px;
+padding:14px;
 }
 
 .logo{
-color:white;
-font-weight:bold;
-font-size:20px;
+display:flex;
+align-items:center;
+gap:8px;
 text-decoration:none;
 }
 
-.search input{
-padding:8px 12px;
-border-radius:6px 0 0 6px;
-border:none;
+.logo-icon{
+width:36px;
+height:36px;
+background:var(--lime);
+border-radius:8px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+animation:float 4s ease-in-out infinite;
 }
 
-.search button{
-padding:8px 12px;
-border:none;
-background:#8DC63F;
-border-radius:0 6px 6px 0;
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-6px)}
+100%{transform:translateY(0)}
 }
+
+.logo-text{
+font-family:'Playfair Display',serif;
+color:#fff;
+font-weight:700;
+}
+
+.nav{
+margin-left:auto;
+display:flex;
+gap:15px;
+}
+
+.nav a{
+color:#fff;
+text-decoration:none;
+font-size:14px;
+}
+
+.nav a:hover{
+color:var(--lime);
+}
+
+/* HERO */
 
 .hero{
-background:#2D4A1E;
-color:white;
-padding:60px;
-text-align:center;
+max-width:1200px;
+margin:40px auto;
+display:grid;
+grid-template-columns:1fr 1fr;
+background:var(--forest);
+border-radius:18px;
+overflow:hidden;
 }
 
-.hero span{
-color:#8DC63F;
+.hero video{
+width:100%;
+height:100%;
+object-fit:cover;
+animation:heroZoom 20s infinite alternate;
 }
 
-.categories{
+@keyframes heroZoom{
+from{transform:scale(1)}
+to{transform:scale(1.1)}
+}
+
+.hero-content{
 padding:40px;
+color:#fff;
+}
+
+.hero-title{
+font-family:'Playfair Display',serif;
+font-size:40px;
+margin-bottom:15px;
+}
+
+.hero-title span{
+color:var(--lime);
+}
+
+.hero-desc{
+opacity:.8;
+margin-bottom:20px;
+}
+
+.hero-stats{
+display:flex;
+gap:20px;
+}
+
+.stat-num{
+font-size:22px;
+font-weight:bold;
+color:var(--lime);
+}
+
+/* SECTION */
+
+.section{
+max-width:1200px;
+margin:auto;
+padding:40px 20px;
+}
+
+.section-title{
+font-family:'Playfair Display',serif;
+font-size:28px;
+margin-bottom:25px;
+}
+
+/* CATEGORY */
+
+.category-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
 gap:15px;
 }
 
 .category{
-background:white;
-border-radius:12px;
+background:#fff;
+border-radius:14px;
 padding:20px;
 text-align:center;
-border:1px solid #e5e5e5;
+border:1px solid #e2ead4;
+transition:.3s;
 }
 
-.products{
-padding:40px;
+.category:hover{
+transform:translateY(-5px) scale(1.05);
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* PRODUCTS */
+
+.product-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
 }
 
 .product{
-background:white;
-border-radius:14px;
-padding:15px;
-border:1px solid #e5e5e5;
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+border:1px solid #e2ead4;
+transition:.35s;
+}
+
+.product:hover{
+transform:translateY(-8px) scale(1.02);
+box-shadow:0 20px 40px rgba(0,0,0,0.15);
 }
 
 .product img{
 width:100%;
-height:150px;
-object-fit:contain;
+padding:20px;
+background:var(--mist);
 }
+
+.product-info{
+padding:15px;
+}
+
+.product-name{
+font-weight:600;
+margin-bottom:8px;
+}
+
+.price{
+color:var(--leaf);
+font-weight:bold;
+}
+
+/* FOOTER */
 
 footer{
-background:#2D4A1E;
-color:white;
-text-align:center;
-padding:30px;
+background:var(--forest);
+color:#fff;
+padding:40px 20px;
+margin-top:40px;
 }
-</style>
 
+.footer-inner{
+max-width:1200px;
+margin:auto;
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:20px;
+}
+
+.footer-title{
+font-weight:bold;
+margin-bottom:10px;
+color:var(--lime);
+}
+
+.footer-links a{
+display:block;
+color:#ddd;
+text-decoration:none;
+margin-bottom:6px;
+}
+
+.footer-links a:hover{
+color:var(--lime);
+}
+
+.footer-bottom{
+text-align:center;
+margin-top:30px;
+font-size:13px;
+opacity:.7;
+}
+
+/* SCROLL ANIMATION */
+
+.fade-up{
+opacity:0;
+transform:translateY(40px);
+transition:.8s;
+}
+
+.fade-up.show{
+opacity:1;
+transform:translateY(0);
+}
+
+@media(max-width:768px){
+
+.hero{
+grid-template-columns:1fr;
+}
+
+.footer-inner{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
 </head>
 
 <body>
 
 <header>
 
-<a href="#" class="logo">
-⛺ CampGear Hub
+<div class="header-inner">
+
+<a class="logo" href="#">
+<div class="logo-icon">⛺</div>
+<div class="logo-text">CampGear Hub</div>
 </a>
 
-<form class="search">
-<input type="text" placeholder="Cari peralatan camping">
-<button>
-<i class="fa-solid fa-search"></i>
-</button>
-</form>
+<div class="nav">
+<a href="#">Beranda</a>
+<a href="#">Toko</a>
+<a href="#">Masuk</a>
+</div>
+
+</div>
 
 </header>
 
 
-<section class="hero">
+<section class="hero fade-up">
 
-<h1>
-Peralatan Camping <br>
+<video autoplay muted loop>
+<source src="hiking.mp4" type="video/mp4">
+</video>
+
+<div class="hero-content">
+
+<h1 class="hero-title">
+Peralatan Camping<br>
 <span>Kualitas Premium</span>
 </h1>
 
-<p>
-Sewa perlengkapan camping lengkap untuk petualangan Anda
+<p class="hero-desc">
+Sewa tenda, carrier, sleeping bag dan perlengkapan outdoor terbaik untuk petualanganmu.
 </p>
 
-</section>
+<div class="hero-stats">
 
-
-<section class="categories">
-
-<div class="category">
-<i class="fa-solid fa-tent"></i>
-<p>Tenda</p>
+<div>
+<div class="stat-num">200+</div>
+Produk
 </div>
 
-<div class="category">
-<i class="fa-solid fa-bag-shopping"></i>
-<p>Carrier</p>
+<div>
+<div class="stat-num">4.9★</div>
+Rating
 </div>
 
-<div class="category">
-<i class="fa-solid fa-moon"></i>
-<p>Sleeping Bag</p>
+<div>
+<div class="stat-num">1 hari</div>
+Min sewa
 </div>
 
-<div class="category">
-<i class="fa-solid fa-fire"></i>
-<p>Kompor</p>
+</div>
+
 </div>
 
 </section>
 
 
-<section class="products">
+<section class="section fade-up">
+
+<h2 class="section-title">Kategori</h2>
+
+<div class="category-grid">
+
+<div class="category">Tenda</div>
+<div class="category">Carrier</div>
+<div class="category">Sleeping Bag</div>
+<div class="category">Kompor</div>
+<div class="category">Matras</div>
+
+</div>
+
+</section>
+
+
+<section class="section fade-up">
+
+<h2 class="section-title">Peralatan Sewa</h2>
+
+<div class="product-grid">
 
 <div class="product">
-<img src="https://via.placeholder.com/200">
-<h3>Tenda 4 Orang</h3>
-<p>Rp 50.000 / hari</p>
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
+<div class="product-info">
+<div class="product-name">Tenda Dome 4 Orang</div>
+<div class="price">Rp 40.000 / hari</div>
+</div>
 </div>
 
 <div class="product">
-<img src="https://via.placeholder.com/200">
-<h3>Carrier 60L</h3>
-<p>Rp 35.000 / hari</p>
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
+<div class="product-info">
+<div class="product-name">Carrier 60L</div>
+<div class="price">Rp 35.000 / hari</div>
+</div>
 </div>
 
 <div class="product">
-<img src="https://via.placeholder.com/200">
-<h3>Sleeping Bag</h3>
-<p>Rp 20.000 / hari</p>
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
+<div class="product-info">
+<div class="product-name">Sleeping Bag</div>
+<div class="price">Rp 20.000 / hari</div>
+</div>
+</div>
+
 </div>
 
 </section>
@@ -183,10 +414,53 @@ Sewa perlengkapan camping lengkap untuk petualangan Anda
 
 <footer>
 
-<p>© 2026 CampGear Hub</p>
-<p>Dibuat oleh Salsabilla Fitri Choirunnisa</p>
+<div class="footer-inner">
+
+<div>
+<div class="footer-title">CampGear Hub</div>
+Toko sewa peralatan camping terpercaya untuk petualangan outdoor.
+</div>
+
+<div>
+<div class="footer-title">Navigasi</div>
+<div class="footer-links">
+<a href="#">Beranda</a>
+<a href="#">Toko</a>
+<a href="#">Kontak</a>
+</div>
+</div>
+
+<div>
+<div class="footer-title">Kontak</div>
+<p>+62 882 3836 2615</p>
+<p>info@campgearhub.com</p>
+<p>Yogyakarta</p>
+</div>
+
+</div>
+
+<div class="footer-bottom">
+© 2026 CampGear Hub
+</div>
 
 </footer>
+
+
+<script>
+
+const observer = new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("show")
+}
+})
+})
+
+document.querySelectorAll(".fade-up").forEach(el=>{
+observer.observe(el)
+})
+
+</script>
 
 </body>
 </html>

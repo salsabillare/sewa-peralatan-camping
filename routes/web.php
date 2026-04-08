@@ -46,6 +46,8 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('customer.orders.index');
     Route::get('/my-orders/{order}', [OrderController::class, 'show'])->name('customer.orders.show');
     Route::post('/my-orders/{order}/confirm-delivery', [OrderController::class, 'confirmDelivery'])->name('customer.orders.confirmDelivery');
+    Route::post('/my-orders/{order}/upload-proof', [OrderController::class, 'uploadProof'])->name('customer.orders.uploadProof');
+    Route::delete('/my-orders/{order}/delete-proof', [OrderController::class, 'deleteProof'])->name('customer.orders.deleteProof');
 
     // Profil customer
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

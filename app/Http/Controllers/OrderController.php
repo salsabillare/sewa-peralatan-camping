@@ -447,4 +447,75 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Upload bukti pembayaran oleh customer
+     */
+    public function uploadProof(Request $request, Order $order)
+    {
+        try {
+            // Cek customer hanya bisa upload untuk order mereka sendiri
+            if (auth()->user()->role === 'customer' && $order->user_id !== auth()->id()) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki akses.');
+            }
+
+            $request->validate([
+                'payment_proof' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+            ]);
+
+            // Hapus file lama jika ada
+            if ($order->payment_proof && \Storage::exists('public/' . $order->payment_proof)) {
+                \Storage::delete('public/' . $order->payment_proof);
+            }
+
+            // Upload file baru
+            if ($request->hasFile('payment_proof')) {
+                $file = $request->file('payment_proof');
+                $path = $file->store('payment_proofs/order_' . $order->id, 'public');
+                
+                $order->update([
+                    'payment_proof' => $path,
+                    'payment_proof_uploaded_at' => now(),
+                ]);
+
+                // Notifikasi admin
+                $adminUsers = User::where('role', 'admin')->get();
+                foreach ($adminUsers as $admin) {
+                    // Bisa tambahkan notification di sini jika ada
+                }
+
+                return redirect()->back()->with('success', 'Bukti pembayaran berhasil diupload. Admin akan memverifikasi dalam waktu singkat.');
+            }
+
+            return redirect()->back()->with('error', 'Gagal mengupload file.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Delete bukti pembayaran
+     */
+    public function deleteProof(Order $order)
+    {
+        try {
+            // Cek customer hanya bisa delete untuk order mereka sendiri
+            if (auth()->user()->role === 'customer' && $order->user_id !== auth()->id()) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki akses.');
+            }
+
+            // Hapus file
+            if ($order->payment_proof && \Storage::exists('public/' . $order->payment_proof)) {
+                \Storage::delete('public/' . $order->payment_proof);
+            }
+
+            $order->update([
+                'payment_proof' => null,
+            ]);
+
+            return redirect()->back()->with('success', 'Bukti pembayaran berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
 }

@@ -138,6 +138,29 @@
                 </p>
             </div>
 
+            <!-- Bukti Pembayaran (jika ada) -->
+            @if($order->payment_proof)
+            <div class="p-3 bg-blue-100 border border-blue-300 rounded-lg">
+                <p class="text-blue-900 font-semibold mb-2 flex items-center">
+                    <i class="fa-solid fa-image text-blue-600 mr-2"></i>Bukti Pembayaran dari Customer
+                </p>
+                <div class="flex gap-3 items-start">
+                    <img src="{{ asset('storage/' . $order->payment_proof) }}" alt="Bukti Pembayaran" class="h-32 w-40 object-cover rounded border border-blue-400">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>File:</strong> {{ basename($order->payment_proof) }}<br>
+                            @if($order->payment_proof_uploaded_at)
+                            <strong>Diupload:</strong> {{ $order->payment_proof_uploaded_at->format('d M Y H:i') }}
+                            @endif
+                        </p>
+                        <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                            <i class="fa-solid fa-download mr-1"></i>Lihat Ukuran Penuh
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- Status Pembayaran Saat Ini -->
             <div>
                 <p class="text-gray-700 font-semibold mb-2">Status Saat Ini:</p>

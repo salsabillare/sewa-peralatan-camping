@@ -309,11 +309,74 @@
                 </ul>
             </div>
 
-            <!-- Upload Bukti (Optional - for future) -->
+            <!-- Upload Bukti Pembayaran -->
+            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 class="font-bold text-blue-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-upload text-blue-600 mr-2"></i>Upload Bukti Pembayaran
+                </h4>
+                <p class="text-sm text-blue-700 mb-4">
+                    Silakan upload screenshot/foto bukti transfer Anda agar admin dapat memverifikasi pembayaran dengan lebih cepat.
+                </p>
+
+                @if($order->payment_proof)
+                    <div class="mb-4 p-3 bg-green-100 border border-green-300 rounded-lg">
+                        <p class="text-green-800 font-semibold mb-2 flex items-center">
+                            <i class="fa-solid fa-check-circle mr-2"></i>Bukti sudah diupload
+                        </p>
+                        <div class="flex gap-3 items-center">
+                            <img src="{{ asset('storage/' . $order->payment_proof) }}" alt="Bukti Pembayaran" class="h-24 w-32 object-cover rounded border border-green-400">
+                            <div class="flex-1">
+                                <p class="text-sm text-green-700 mb-1">File: {{ basename($order->payment_proof) }}</p>
+                                @if($order->payment_proof_uploaded_at)
+                                <p class="text-sm text-green-700 mb-2">Diupload: {{ $order->payment_proof_uploaded_at->format('d M Y H:i') }}</p>
+                                @endif
+                                <form action="{{ route('customer.orders.deleteProof', $order->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-sm px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded transition"
+                                            onclick="return confirm('Hapus bukti pembayaran ini?')">
+                                        <i class="fa-solid fa-trash mr-1"></i>Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <form action="{{ route('customer.orders.uploadProof', $order->id) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
+                    @csrf
+                    
+                    <div class="border-2 border-dashed border-blue-300 rounded-lg p-4 text-center cursor-pointer" id="dragDropArea">
+                        <input type="file" name="payment_proof" id="payment_proof" class="hidden" accept="image/*" required>
+                        <div class="text-blue-600">
+                            <i class="fa-solid fa-cloud-arrow-up text-2xl mb-2"></i>
+                            <p class="font-semibold" id="dragDropText">Drag & drop file atau klik untuk pilih</p>
+                            <p class="text-sm text-blue-500 mt-1">Format: JPG, PNG (Max 5MB)</p>
+                        </div>
+                    </div>
+
+                    <div id="filePreview" class="hidden">
+                        <img id="previewImg" src="" alt="Preview" class="h-40 object-cover rounded border border-blue-300 mb-3">
+                        <p id="fileName" class="text-sm text-gray-600 mb-3"></p>
+                    </div>
+
+                    <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                        <i class="fa-solid fa-upload mr-2"></i>Upload Bukti Pembayaran
+                    </button>
+                    @if($order->payment_proof)
+                    <button type="button" onclick="document.getElementById('payment_proof').value=''; document.getElementById('filePreview').classList.add('hidden'); document.getElementById('dragDropArea').style.opacity='1';" 
+                            class="w-full px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg font-semibold transition">
+                        <i class="fa-solid fa-times mr-2"></i>Batal
+                    </button>
+                    @endif
+                </form>
+            </div>
+
+            <!-- Informasi -->
             <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                 <p class="text-sm text-gray-600">
                     <i class="fa-solid fa-info-circle mr-1"></i>
-                    Setelah transfer, admin akan memverifikasi pembayaran Anda. Anda akan menerima notifikasi via email ketika pembayaran sudah dikonfirmasi.
+                    Setelah transfer, upload bukti pembayaran agar admin dapat memverifikasi dengan lebih cepat. Admin akan mengkonfirmasi pembayaran dalam maksimal 1x24 jam.
                 </p>
             </div>
         </div>
@@ -348,6 +411,11 @@
         <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">
             <i class="fa-solid fa-shopping-bag"></i>Lanjut Belanja
         </a>
+
+        <!-- Print Button -->
+        <button onclick="window.print()" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+            <i class="fa-solid fa-print"></i>Cetak Pesanan
+        </button>
         
         @if($order->status === 'shipped')
         <form action="{{ route('customer.orders.confirmDelivery', $order->id) }}" method="POST" class="inline">
@@ -378,6 +446,101 @@ function copyToClipboard(text) {
     // Show feedback to user
     alert('Nomor rekening berhasil disalin ke clipboard!');
 }
+
+// Drag & Drop File Upload
+const dragDropArea = document.getElementById('dragDropArea');
+const fileInput = document.getElementById('payment_proof');
+const filePreview = document.getElementById('filePreview');
+const previewImg = document.getElementById('previewImg');
+const fileName = document.getElementById('fileName');
+const dragDropText = document.getElementById('dragDropText');
+
+if (dragDropArea) {
+    // Prevent default behavior
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Highlight on drag
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, () => {
+            dragDropArea.style.borderColor = '#3b82f6';
+            dragDropArea.style.backgroundColor = '#eff6ff';
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, () => {
+            dragDropArea.style.borderColor = '#93c5fd';
+            dragDropArea.style.backgroundColor = 'transparent';
+        });
+    });
+
+    // Handle drop
+    dragDropArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        handleFileSelect(files[0]);
+    });
+
+    // Click to select
+    dragDropArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    function handleFileSelect(file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Silakan pilih file gambar!');
+            fileInput.value = '';
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Ukuran file tidak boleh lebih dari 5MB!');
+            fileInput.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            fileName.textContent = 'File: ' + file.name;
+            filePreview.classList.remove('hidden');
+            dragDropArea.style.opacity = '0.5';
+            dragDropText.textContent = 'File dipilih: ' + file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Print Styling
+window.addEventListener('beforeprint', function() {
+    // Hide buttons during print
+    document.querySelectorAll('a, button, form').forEach(el => {
+        if (el.closest('.mt-6') && el.closest('.flex')) {
+            el.style.display = 'none';
+        }
+    });
+});
+
+window.addEventListener('afterprint', function() {
+    // Show buttons after print
+    document.querySelectorAll('a, button, form').forEach(el => {
+        el.style.display = '';
+    });
+});
 </script>
 
 @endsection

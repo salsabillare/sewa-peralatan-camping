@@ -21,6 +21,8 @@ class Order extends Model
         'payment_status',
         'payment_confirmation_date',
         'payment_notes',
+        'payment_proof',
+        'payment_proof_uploaded_at',
         'address',
         'shipping_cost',
         'admin_shipping_cost',
@@ -35,6 +37,7 @@ class Order extends Model
     protected $casts = [
         'shipping_cost_confirmed_at' => 'datetime',
         'payment_confirmation_date' => 'datetime',
+        'payment_proof_uploaded_at' => 'datetime',
         'estimated_delivery_date' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
